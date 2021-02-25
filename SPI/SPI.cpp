@@ -19,7 +19,7 @@
  */
 
 #include "pins_arduino.h"
-#include "SPI.h"
+#include "SPI_NEW.h"
 
 static volatile voidFuncPtr intSPIFunc;
 

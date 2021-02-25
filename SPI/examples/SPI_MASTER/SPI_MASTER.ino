@@ -1,7 +1,7 @@
-#include <SPI.h>
+#include <SPI_NEW.h>
 
-char data[6] = {
-  'H','e','l','L','o','\n'};
+char data[7] = {
+  'H','e','l','L','o','\n','\0'};
 int index;
 
 void setup()
@@ -13,33 +13,9 @@ void setup()
 void loop()
 {
   digitalWrite(SS, LOW);
-  byte c = SPI.transfer(data[index]);
+  SPI.transfer(data, 7);
   digitalWrite(SS,HIGH);
-  Serial.print((char)c);
-  switch(c)
-  {
-  case 'C': 
-    index = 1;
-    break;
-  case 'a': 
-    index = 2;
-    break;
-  case 'k': 
-    index = 3;
-    break;
-  case 'e': 
-    index = 4;
-    break;
-  case's': 
-    index = 5;
-    break;
-  case '\n': 
-    index = 0;
-    break;
-  default:
-    Serial.println("Nope");
-    break;
-  }
+  Serial.print(data);
   delay(200);
 }
 

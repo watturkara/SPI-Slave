@@ -52,6 +52,7 @@ typedef void (*voidFuncPtr)(void);
 class SPIClass {
 public:
   inline static byte transfer(byte _data);
+  inline static void transfer(void *buf, size_t count);
 
   // SPI Configuration methods
 
@@ -88,6 +89,39 @@ if(SPCR & _BV(MSTR)) //Check if Arduino is configured as Master or Slave
  return receive;
 }
 
+void SPIClass::transfer(void *buf, size_t count)
+{
+	if (count <= 0)
+		return;
 
+	uint8_t *p = (uint8_t *)buf;
+
+	if (SPCR & _BV(MSTR))
+	{	// if master, data reg = first val of buf
+		SPDR = *p;
+		while (--count > 0)
+		{
+			uint8_t out = *(p + 1); // out = next val in buf
+			while (!(SPSR & _BV(SPIF)));
+			uint8_t in = SPDR;
+			SPDR = out;
+			*p++ = in;
+		}
+		while (!(SPSR & _BV(SPIF)));
+		*p = SPDR;
+	}
+	else
+	{
+		uint8_t out = *p;
+		while (--count >= 0)
+		{
+			while (!(SPSR & _BV(SPIF)));
+			uint8_t in = SPDR;
+			SPDR = out;
+			*p++ = in;
+			out = *p;
+		}
+	}
+}
 
 #endif
