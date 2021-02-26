@@ -113,7 +113,7 @@ void SPIClass::transfer(void *buf, size_t count)
 	else
 	{
 		uint8_t out = *p;
-		while (--count >= 0)
+		while (--count > 0)
 		{
 			while (!(SPSR & _BV(SPIF)));
 			uint8_t in = SPDR;
@@ -121,6 +121,9 @@ void SPIClass::transfer(void *buf, size_t count)
 			*p++ = in;
 			out = *p;
 		}
+		while(!(SPSR & _BV(SPIF)));
+   		*p = SPDR;
+   		SPDR = out;
 	}
 }
 
