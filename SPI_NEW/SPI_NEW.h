@@ -93,30 +93,32 @@ void SPIClass::transfer(void *tx_buff, void* rx_buff, size_t count)
 	if (count <= 0)
 		return;
 
+	uint8_t *out = (uint8_t *) tx_buff;
+	uint8_t *in = (uint8_t *) rx_buff;
 
 	if (SPCR & _BV(MSTR))
 	{	// if master, data reg = first val of buf
-		SPDR = (uint8_t) *tx_buff++;
+		SPDR = (uint8_t) *out++;
 		while (--count > 0)
 		{
 			while (!(SPSR & _BV(SPIF)));
-			*rx_buff++ = SPDR;
-			SPDR = (uint8_t) *tx_buff++;
+			*in++ = SPDR;
+			SPDR = (uint8_t) *out++;
 		}
 		while (!(SPSR & _BV(SPIF)));
-		*rx_buff = SPDR;
+		*in = SPDR;
 	}
 	else
 	{
 		while (--count > 0)
 		{
 			while (!(SPSR & _BV(SPIF)));
-			*rx_buff++ = SPDR;
-			SPDR = (uint8_t) *tx_buff++;
+			*in++ = SPDR;
+			SPDR = (uint8_t) *out++;
 		}
 		while(!(SPSR & _BV(SPIF)));
-   		*rx_buff = SPDR;
-		SPDR = (uint8_t) *tx_buff;
+   		*in = SPDR;
+		SPDR = (uint8_t) *out;
 	}
 }
 
