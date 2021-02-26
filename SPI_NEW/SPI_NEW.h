@@ -51,7 +51,7 @@ typedef void (*voidFuncPtr)(void);
 class SPIClass {
 public:
   inline static byte transfer(byte _data);
-  inline static void transfer(void *buf, size_t count);
+  inline static void transfer(void *tx_buff, void* rx_buff, size_t count);
 
   // SPI Configuration methods
 
@@ -88,7 +88,7 @@ if(SPCR & _BV(MSTR)) //Check if Arduino is configured as Master or Slave
  return receive;
 }
 
-void SPIClass::transfer(void *rx_buff, void* tx_buff, size_t count)
+void SPIClass::transfer(void *tx_buff, void* rx_buff, size_t count)
 {
 	if (count <= 0)
 		return;
