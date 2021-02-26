@@ -48,7 +48,6 @@
 
 typedef void (*voidFuncPtr)(void);
 
-// Comment
 class SPIClass {
 public:
   inline static byte transfer(byte _data);
