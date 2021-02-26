@@ -89,41 +89,34 @@ if(SPCR & _BV(MSTR)) //Check if Arduino is configured as Master or Slave
  return receive;
 }
 
-void SPIClass::transfer(void *buf, size_t count)
+void SPIClass::transfer(void *rx_buff, void* tx_buff, size_t count)
 {
 	if (count <= 0)
 		return;
 
-	uint8_t *p = (uint8_t *)buf;
-
 	if (SPCR & _BV(MSTR))
 	{	// if master, data reg = first val of buf
-		SPDR = *p;
+		SPDR = (uint8_t) *tx_buff++;
 		while (--count > 0)
 		{
-			uint8_t out = *(p + 1); // out = next val in buf
 			while (!(SPSR & _BV(SPIF)));
-			uint8_t in = SPDR;
-			SPDR = out;
-			*p++ = in;
+			*rx_buff++ = SPDR;
+			SPDR = (uint8_t) *tx_buff++;
 		}
 		while (!(SPSR & _BV(SPIF)));
-		*p = SPDR;
+		*rx_buff = SPDR;
 	}
 	else
 	{
-		uint8_t out = *p;
 		while (--count > 0)
 		{
 			while (!(SPSR & _BV(SPIF)));
-			uint8_t in = SPDR;
-			SPDR = out;
-			*p++ = in;
-			out = *p;
+			*rx_buff++ = SPDR;
+			SPDR = (uint8_t) *tx_buff++;
 		}
 		while(!(SPSR & _BV(SPIF)));
-   		*p = SPDR;
-   		SPDR = out;
+   		*rx_buff = SPDR;
+		SPDR = (uint8_t) *tx_buff;
 	}
 }
 
