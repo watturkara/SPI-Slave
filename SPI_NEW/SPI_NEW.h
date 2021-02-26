@@ -93,6 +93,7 @@ void SPIClass::transfer(void *rx_buff, void* tx_buff, size_t count)
 {
 	if (count <= 0)
 		return;
+		
 
 	if (SPCR & _BV(MSTR))
 	{	// if master, data reg = first val of buf
