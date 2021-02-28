@@ -80,14 +80,13 @@ if(SPCR & _BV(MSTR)) //Check if Arduino is configured as Master or Slave
  }
  else
  {
-   while(!(SPSR & _BV(SPIF)));
-   receive = SPDR;
    SPDR = _data;
+   receive = SPDR;
    
  }
  return receive;
 }
-
+/*
 void SPIClass::transfer(void *tx_buff, void* rx_buff, size_t count)
 {
 	if (count <= 0)
@@ -112,14 +111,16 @@ void SPIClass::transfer(void *tx_buff, void* rx_buff, size_t count)
 	{
 		while (--count > 0)
 		{
-			while (!(SPSR & _BV(SPIF)));
-			*in++ = SPDR;
 			SPDR = *out++;
+			//Need to delay for 8 bits to be transferred
+			delayMicroseconds(20);
+			*in++ = SPDR;
 		}
-		while(!(SPSR & _BV(SPIF)));
-   		*in = SPDR;
 		SPDR = *out;
+		delayMicroseconds(20);
+   		*in = SPDR;
+		
 	}
 }
-
+*/
 #endif
